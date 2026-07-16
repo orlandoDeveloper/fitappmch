@@ -77,14 +77,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "PulseFit — Premium Workout Tracker" },
+      { name: "description", content: "Track workouts, log sets and PRs, and visualize your progress with a premium mobile-first fitness dashboard." },
+      { property: "og:title", content: "PulseFit — Premium Workout Tracker" },
+      { property: "og:description", content: "Log lifts, build streaks, and see your volume climb with beautiful analytics." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:site", content: "@Lovable" },
     ],
     links: [
       {
