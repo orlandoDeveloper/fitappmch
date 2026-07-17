@@ -1,6 +1,6 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { LayoutDashboard, Compass, Dumbbell, User, Bell, Flame, Zap } from "lucide-react";
+import { LayoutDashboard, Compass, Dumbbell, User, Bell, Flame } from "lucide-react";
 import type { ReactNode } from "react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -21,34 +21,40 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { userStats } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
+import logoUrl from "@/assets/logo.png";
 
 const nav = [
-  { to: "/", label: "Dashboard", icon: LayoutDashboard },
-  { to: "/explore", label: "Explore", icon: Compass },
-  { to: "/workout", label: "Workout", icon: Dumbbell },
-  { to: "/profile", label: "Profile", icon: User },
+  { to: "/", label: "Panel", icon: LayoutDashboard },
+  { to: "/explore", label: "Explorar", icon: Compass },
+  { to: "/workout", label: "Entrenar", icon: Dumbbell },
+  { to: "/profile", label: "Perfil", icon: User },
 ] as const;
+
+function BrandMark({ className }: { className?: string }) {
+  return (
+    <div className={cn("grid place-items-center rounded-xl bg-black shadow-[var(--shadow-glow)] overflow-hidden", className)}>
+      <img src={logoUrl} alt="StarFit-Manager" className="h-full w-full object-contain" />
+    </div>
+  );
+}
 
 function AppSidebar() {
   const pathname = useRouterState({ select: (r) => r.location.pathname });
 
   return (
     <Sidebar collapsible="icon">
-      {/* Header: Logo */}
       <SidebarHeader>
         <div className="flex items-center gap-2 px-2 py-3">
-          <div className="grid h-9 w-9 shrink-0 place-items-center rounded-xl gradient-brand shadow-[var(--shadow-glow)]">
-            <Zap className="h-4 w-4 text-primary-foreground" />
-          </div>
+          <BrandMark className="h-9 w-9 shrink-0" />
           <span className="font-black text-lg tracking-tight group-data-[collapsible=icon]:hidden">
-            PULSE<span className="text-gradient-brand">FIT</span>
+            STAR<span className="text-gradient-brand">FIT</span>
+            <span className="text-xs font-semibold text-muted-foreground ml-1">Manager</span>
           </span>
         </div>
       </SidebarHeader>
 
       <Separator className="mx-2 w-auto" />
 
-      {/* Nav items */}
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupContent>
@@ -78,17 +84,15 @@ function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      {/* Footer: streak card */}
       <SidebarFooter>
         <div className="rounded-xl border border-border/60 p-3 glass-card group-data-[collapsible=icon]:hidden">
           <div className="flex items-center gap-1.5 text-xs font-semibold text-streak">
-            <Flame className="h-4 w-4" /> {userStats.streakDays} day streak
+            <Flame className="h-4 w-4" /> Racha de {userStats.streakDays} días
           </div>
           <p className="mt-1.5 text-xs text-muted-foreground leading-relaxed">
-            Keep it going. Log a session today.
+            Sigue así. Registra una sesión hoy.
           </p>
         </div>
-        {/* collapsed state: just icon */}
         <div className="hidden group-data-[collapsible=icon]:flex justify-center pb-1">
           <Flame className="h-5 w-5 text-streak" />
         </div>
@@ -106,15 +110,13 @@ export function AppShell({ children }: { children: ReactNode }) {
         <AppSidebar />
 
         <SidebarInset>
-          {/* Sticky top header */}
           <header className="sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-border/60 bg-background/80 px-4 backdrop-blur-xl">
-            {/* Sidebar trigger (hamburger on mobile, toggle on desktop) */}
             <SidebarTrigger className="text-muted-foreground hover:text-foreground" />
 
-            {/* Logo shown only on mobile when sidebar is closed */}
             <div className="flex items-center gap-2 md:hidden">
+              <BrandMark className="h-7 w-7" />
               <span className="font-black tracking-tight">
-                PULSE<span className="text-gradient-brand">FIT</span>
+                STAR<span className="text-gradient-brand">FIT</span>
               </span>
             </div>
 
@@ -125,13 +127,14 @@ export function AppShell({ children }: { children: ReactNode }) {
               >
                 <Flame className="h-3.5 w-3.5" />
                 {userStats.streakDays}
-                <span className="hidden sm:inline">day streak</span>
+                <span className="hidden sm:inline">días de racha</span>
               </motion.div>
 
               <Button
                 variant="ghost"
                 size="icon"
                 className="relative rounded-full hover:bg-accent"
+                aria-label="Notificaciones"
               >
                 <Bell className="h-5 w-5" />
                 <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-destructive ring-2 ring-background" />
@@ -145,10 +148,8 @@ export function AppShell({ children }: { children: ReactNode }) {
             </div>
           </header>
 
-          {/* Page content */}
           <main className="flex-1 pb-8">{children}</main>
 
-          {/* Mobile bottom nav */}
           <nav className="md:hidden fixed bottom-0 inset-x-0 z-40 border-t border-border/60 bg-background/90 backdrop-blur-xl">
             <div className="mx-auto grid max-w-md grid-cols-4 px-2 py-2">
               {nav.map((item) => {
