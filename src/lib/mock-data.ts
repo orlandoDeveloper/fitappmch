@@ -34,11 +34,11 @@ export const userStats: UserStats = {
 };
 
 export const recentWorkouts: WorkoutLog[] = [
-  { id: "w1", name: "Push Day — Chest & Shoulders", type: "Push", date: "Today", durationMin: 62, volumeKg: 8420, exercises: [] },
-  { id: "w2", name: "Pull Day — Back & Biceps", type: "Pull", date: "Yesterday", durationMin: 71, volumeKg: 9180, exercises: [] },
-  { id: "w3", name: "Leg Day — Quad Focus", type: "Legs", date: "2d ago", durationMin: 84, volumeKg: 12400, exercises: [] },
-  { id: "w4", name: "Upper Hypertrophy", type: "Upper", date: "4d ago", durationMin: 58, volumeKg: 7620, exercises: [] },
-  { id: "w5", name: "Full Body Conditioning", type: "Full Body", date: "5d ago", durationMin: 45, volumeKg: 5900, exercises: [] },
+  { id: "w1", name: "Día de Empuje — Pecho y Hombros", type: "Push", date: "Hoy", durationMin: 62, volumeKg: 8420, exercises: [] },
+  { id: "w2", name: "Día de Tirón — Espalda y Bíceps", type: "Pull", date: "Ayer", durationMin: 71, volumeKg: 9180, exercises: [] },
+  { id: "w3", name: "Día de Pierna — Foco en Cuádriceps", type: "Legs", date: "Hace 2d", durationMin: 84, volumeKg: 12400, exercises: [] },
+  { id: "w4", name: "Hipertrofia Superior", type: "Upper", date: "Hace 4d", durationMin: 58, volumeKg: 7620, exercises: [] },
+  { id: "w5", name: "Acondicionamiento Full Body", type: "Full Body", date: "Hace 5d", durationMin: 45, volumeKg: 5900, exercises: [] },
 ];
 
 export const volumeSeries = [
@@ -53,10 +53,10 @@ export const volumeSeries = [
 ];
 
 export const muscleSplit = [
-  { group: "Chest", sets: 24 },
-  { group: "Back", sets: 28 },
-  { group: "Legs", sets: 32 },
-  { group: "Shoulders", sets: 18 },
-  { group: "Arms", sets: 20 },
+  { group: "Pecho", sets: 24 },
+  { group: "Espalda", sets: 28 },
+  { group: "Piernas", sets: 32 },
+  { group: "Hombros", sets: 18 },
+  { group: "Brazos", sets: 20 },
   { group: "Core", sets: 14 },
 ];
