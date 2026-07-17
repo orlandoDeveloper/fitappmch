@@ -40,6 +40,15 @@ import { exercises as allExercises } from "@/lib/mock-data";
 import { useWorkoutStore } from "@/lib/store";
 import { cn } from "@/lib/utils";
 
+const muscleLabel: Record<string, string> = {
+  Chest: "Pecho", Back: "Espalda", Legs: "Piernas",
+  Shoulders: "Hombros", Arms: "Brazos", Core: "Core",
+};
+const equipmentLabel: Record<string, string> = {
+  Barbell: "Barra", Dumbbell: "Mancuerna",
+  Machine: "Máquina", Cable: "Cable", Bodyweight: "Peso corporal",
+};
+
 function useElapsed(start: number | null) {
   const [now, setNow] = useState(Date.now());
   useEffect(() => {
@@ -172,7 +181,7 @@ export function WorkoutView() {
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0">
                       <CardTitle className="truncate">{ex.name}</CardTitle>
-                      <CardDescription>{ex.target} · {ex.equipment}</CardDescription>
+                      <CardDescription>{muscleLabel[ex.target] ?? ex.target} · {equipmentLabel[ex.equipment] ?? ex.equipment}</CardDescription>
                     </div>
                     <Button
                       size="icon"
