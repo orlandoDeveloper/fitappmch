@@ -43,12 +43,12 @@ const fadeUp = {
 };
 
 const typeColor: Record<string, string> = {
-  Push: "bg-chart-4/15 text-chart-4 border-chart-4/30",
-  Pull: "bg-primary/15 text-primary border-primary/30",
-  Legs: "bg-streak/15 text-streak border-streak/30",
-  Upper: "bg-chart-5/15 text-chart-5 border-chart-5/30",
-  "Full Body": "bg-success/15 text-success border-success/30",
-  Lower: "bg-chart-4/15 text-chart-4 border-chart-4/30",
+  Empuje: "bg-chart-4/15 text-chart-4 border-chart-4/30",
+  Tirón: "bg-primary/15 text-primary border-primary/30",
+  Piernas: "bg-streak/15 text-streak border-streak/30",
+  Superior: "bg-chart-5/15 text-chart-5 border-chart-5/30",
+  "Cuerpo Completo": "bg-success/15 text-success border-success/30",
+  Inferior: "bg-chart-4/15 text-chart-4 border-chart-4/30",
 };
 
 function MetricCard({
@@ -110,10 +110,10 @@ export function DashboardView() {
         className="flex flex-wrap items-end justify-between gap-4"
       >
         <div className="min-w-0">
-          <p className="text-sm text-muted-foreground">Welcome back,</p>
+          <p className="text-sm text-muted-foreground">Bienvenido de nuevo,</p>
           <h1 className="text-3xl lg:text-4xl font-black tracking-tight">
             {userStats.name.split(" ")[0]}{" "}
-            <span className="text-gradient-brand">let's lift.</span>
+            <span className="text-gradient-brand">a entrenar.</span>
           </h1>
         </div>
         <Button
@@ -121,7 +121,7 @@ export function DashboardView() {
           className="gradient-brand text-primary-foreground shadow-[var(--shadow-glow)] hover:opacity-90 rounded-full h-11 px-5"
         >
           <Link to="/workout">
-            <Play className="h-4 w-4" /> Start workout
+            <Play className="h-4 w-4" /> Iniciar entreno
           </Link>
         </Button>
       </motion.div>
@@ -131,26 +131,26 @@ export function DashboardView() {
         <MetricCard
           index={0}
           icon={<TrendingUp className="h-5 w-5" />}
-          label="Weekly Volume"
-          value="45,200 kg"
+          label="Volumen Semanal"
+          value="45.200 kg"
           gradient="gradient-brand"
           sub={
             <Badge className="border-success/40 bg-success/15 text-success">
               <ArrowUpRight className="h-3 w-3" /> +{userStats.weeklyVolumeDelta}%
-              vs last week
+              vs semana anterior
             </Badge>
           }
         />
         <MetricCard
           index={1}
           icon={<Trophy className="h-5 w-5" />}
-          label="Workouts This Month"
+          label="Entrenos este Mes"
           value={`${userStats.monthlyWorkoutsDone}/${userStats.monthlyWorkoutsGoal}`}
           gradient="gradient-success"
           sub={
             <span className="text-xs text-muted-foreground">
-              {userStats.monthlyWorkoutsGoal - userStats.monthlyWorkoutsDone} to
-              hit your goal
+              {userStats.monthlyWorkoutsGoal - userStats.monthlyWorkoutsDone} para
+              alcanzar tu meta
             </span>
           }
         >
@@ -162,12 +162,12 @@ export function DashboardView() {
         <MetricCard
           index={2}
           icon={<Flame className="h-5 w-5" />}
-          label="Current Streak"
-          value={`${userStats.streakDays} Days`}
+          label="Racha Actual"
+          value={`${userStats.streakDays} Días`}
           gradient="gradient-streak"
           sub={
             <span className="text-xs text-muted-foreground">
-              Longest: 12 days · Keep it hot
+              Más larga: 12 días · Mantén el ritmo
             </span>
           }
         />
@@ -186,11 +186,11 @@ export function DashboardView() {
             <CardHeader className="pb-2">
               <div className="flex items-center justify-between">
                 <div>
-                  <CardTitle>Volume Progress</CardTitle>
-                  <CardDescription>Last 8 weeks · kilograms</CardDescription>
+                  <CardTitle>Progreso de Volumen</CardTitle>
+                  <CardDescription>Últimas 8 semanas · kilogramos</CardDescription>
                 </div>
                 <Badge variant="outline" className="border-primary/30 text-primary">
-                  Trending up
+                  En ascenso
                 </Badge>
               </div>
             </CardHeader>
@@ -239,8 +239,8 @@ export function DashboardView() {
         >
           <Card className="glass-card border-border/60 h-full">
             <CardHeader className="pb-2">
-              <CardTitle>Muscle Group Split</CardTitle>
-              <CardDescription>Sets this week</CardDescription>
+              <CardTitle>Grupos Musculares</CardTitle>
+              <CardDescription>Series esta semana</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="h-64">
@@ -278,11 +278,11 @@ export function DashboardView() {
           <CardHeader>
             <div className="flex items-center justify-between">
               <div>
-                <CardTitle>Recent Workouts</CardTitle>
-                <CardDescription>Your last sessions</CardDescription>
+                <CardTitle>Entrenos Recientes</CardTitle>
+                <CardDescription>Tus últimas sesiones</CardDescription>
               </div>
               <Button variant="ghost" size="sm" className="text-primary hover:text-primary">
-                View all
+                Ver todos
               </Button>
             </div>
           </CardHeader>
@@ -302,7 +302,7 @@ export function DashboardView() {
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-semibold">{w.name}</p>
                     <p className="text-xs text-muted-foreground">
-                      {w.date} · {w.durationMin} min · {w.volumeKg.toLocaleString()} kg
+                      {w.date} · {w.durationMin} min · {w.volumeKg.toLocaleString("es-ES")} kg
                     </p>
                   </div>
                   <Badge variant="outline" className={typeColor[w.type]}>
