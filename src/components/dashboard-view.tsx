@@ -315,7 +315,7 @@ export function DashboardView() {
                     </p>
                   </div>
                   <Badge variant="outline" className={typeColor[w.type]}>
-                    {w.type}
+                    {typeLabel[w.type] ?? w.type}
                   </Badge>
                 </motion.li>
               ))}
