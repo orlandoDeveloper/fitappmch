@@ -40,6 +40,15 @@ import { exercises as allExercises } from "@/lib/mock-data";
 import { useWorkoutStore } from "@/lib/store";
 import { cn } from "@/lib/utils";
 
+const muscleLabel: Record<string, string> = {
+  Chest: "Pecho", Back: "Espalda", Legs: "Piernas",
+  Shoulders: "Hombros", Arms: "Brazos", Core: "Core",
+};
+const equipmentLabel: Record<string, string> = {
+  Barbell: "Barra", Dumbbell: "Mancuerna",
+  Machine: "Máquina", Cable: "Cable", Bodyweight: "Peso corporal",
+};
+
 function useElapsed(start: number | null) {
   const [now, setNow] = useState(Date.now());
   useEffect(() => {
@@ -103,16 +112,16 @@ export function WorkoutView() {
                 <Flag className="h-10 w-10 text-primary-foreground" />
               </div>
               <h1 className="mt-6 text-3xl font-black tracking-tight">
-                Ready to <span className="text-gradient-brand">crush it?</span>
+                ¿Listo para <span className="text-gradient-brand">darlo todo?</span>
               </h1>
               <p className="mt-2 text-muted-foreground max-w-sm mx-auto">
-                Start a live session to log sets, reps, weight and RPE in real time.
+                Inicia una sesión en vivo para registrar series, reps, peso y RPE en tiempo real.
               </p>
               <Button
                 onClick={startWorkout}
                 className="mt-8 gradient-brand text-primary-foreground rounded-full h-12 px-8 text-base shadow-[var(--shadow-glow)]"
               >
-                Start new workout
+                Iniciar nuevo entreno
               </Button>
             </CardContent>
           </Card>
@@ -132,21 +141,21 @@ export function WorkoutView() {
                 <Timer className="h-5 w-5" />
               </div>
               <div>
-                <p className="text-xs text-muted-foreground">Active session</p>
+                <p className="text-xs text-muted-foreground">Sesión activa</p>
                 <p className="text-lg font-black tabular-nums">{elapsed}</p>
               </div>
             </div>
             <div className="hidden sm:flex gap-6 text-xs text-muted-foreground">
               <div className="text-center">
-                <p className="text-[10px] uppercase tracking-wider">Sets</p>
+                <p className="text-[10px] uppercase tracking-wider">Series</p>
                 <p className="text-foreground font-bold text-sm">
                   {stats.completed}/{stats.totalSets}
                 </p>
               </div>
               <div className="text-center">
-                <p className="text-[10px] uppercase tracking-wider">Volume</p>
+                <p className="text-[10px] uppercase tracking-wider">Volumen</p>
                 <p className="text-foreground font-bold text-sm">
-                  {stats.volume.toLocaleString()} kg
+                  {stats.volume.toLocaleString("es-ES")} kg
                 </p>
               </div>
             </div>
@@ -172,7 +181,7 @@ export function WorkoutView() {
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0">
                       <CardTitle className="truncate">{ex.name}</CardTitle>
-                      <CardDescription>{ex.target} · {ex.equipment}</CardDescription>
+                      <CardDescription>{muscleLabel[ex.target] ?? ex.target} · {equipmentLabel[ex.equipment] ?? ex.equipment}</CardDescription>
                     </div>
                     <Button
                       size="icon"
@@ -190,7 +199,7 @@ export function WorkoutView() {
                     <TableHeader>
                       <TableRow className="border-border/40 hover:bg-transparent">
                         <TableHead className="w-8 text-[10px] uppercase tracking-wider">#</TableHead>
-                        <TableHead className="text-[10px] uppercase tracking-wider">Weight (kg)</TableHead>
+                        <TableHead className="text-[10px] uppercase tracking-wider">Peso (kg)</TableHead>
                         <TableHead className="text-[10px] uppercase tracking-wider">Reps</TableHead>
                         <TableHead className="w-16 text-[10px] uppercase tracking-wider">RPE</TableHead>
                         <TableHead className="w-10" />
@@ -285,7 +294,7 @@ export function WorkoutView() {
                     onClick={() => addSet(we.exerciseId)}
                     className="mt-3 w-full text-primary hover:text-primary hover:bg-primary/10 rounded-xl"
                   >
-                    <Plus className="h-4 w-4" /> Add set
+                    <Plus className="h-4 w-4" /> Añadir serie
                   </Button>
                 </CardContent>
               </Card>
@@ -299,7 +308,7 @@ export function WorkoutView() {
         onClick={() => setPickerOpen(true)}
         className="w-full h-14 border-dashed border-border/60 rounded-2xl hover:bg-accent hover:border-primary/40"
       >
-        <Plus className="h-4 w-4" /> Add exercise
+        <Plus className="h-4 w-4" /> Añadir ejercicio
       </Button>
 
       {/* Floating finish button */}
@@ -313,7 +322,7 @@ export function WorkoutView() {
             onClick={() => setSummaryOpen(true)}
             className="gradient-success text-success-foreground rounded-full h-14 px-6 shadow-[var(--shadow-glow)] font-bold"
           >
-            <CheckCircle2 className="h-5 w-5" /> Finish workout
+            <CheckCircle2 className="h-5 w-5" /> Finalizar entreno
           </Button>
         </motion.div>
       )}
@@ -322,8 +331,8 @@ export function WorkoutView() {
       <Dialog open={pickerOpen} onOpenChange={setPickerOpen}>
         <DialogContent className="max-w-lg bg-card border-border/60">
           <DialogHeader>
-            <DialogTitle>Pick an exercise</DialogTitle>
-            <DialogDescription>Add to your active session.</DialogDescription>
+            <DialogTitle>Elige un ejercicio</DialogTitle>
+            <DialogDescription>Añádelo a tu sesión activa.</DialogDescription>
           </DialogHeader>
           <Separator className="border-border/40" />
           <div className="max-h-[60vh] overflow-y-auto space-y-1 -mx-2 px-2">
@@ -332,7 +341,7 @@ export function WorkoutView() {
                 key={ex.id}
                 onClick={() => {
                   addExercise(ex.id);
-                  toast.success(`Added ${ex.name}`);
+                  toast.success(`${ex.name} añadido`);
                   setPickerOpen(false);
                 }}
                 className="w-full flex items-center gap-3 rounded-xl px-3 py-2.5 hover:bg-accent text-left transition-colors"
@@ -357,21 +366,21 @@ export function WorkoutView() {
         <DialogContent className="max-w-md bg-card border-border/60">
           <DialogHeader>
             <DialogTitle className="text-2xl font-black">
-              Workout <span className="text-gradient-brand">complete!</span>
+              Entreno <span className="text-gradient-brand">completado!</span>
             </DialogTitle>
-            <DialogDescription>Great work. Here's your session summary.</DialogDescription>
+            <DialogDescription>Gran trabajo. Aquí está el resumen de tu sesión.</DialogDescription>
           </DialogHeader>
           <div className="grid grid-cols-3 gap-3 my-4">
             <div className="rounded-2xl bg-muted/50 p-4 text-center">
-              <p className="text-[10px] uppercase tracking-wider text-muted-foreground">Duration</p>
+              <p className="text-[10px] uppercase tracking-wider text-muted-foreground">Duración</p>
               <p className="text-xl font-black mt-1 tabular-nums">{elapsed}</p>
             </div>
             <div className="rounded-2xl bg-muted/50 p-4 text-center">
-              <p className="text-[10px] uppercase tracking-wider text-muted-foreground">Sets</p>
+              <p className="text-[10px] uppercase tracking-wider text-muted-foreground">Series</p>
               <p className="text-xl font-black mt-1">{stats.completed}</p>
             </div>
             <div className="rounded-2xl bg-muted/50 p-4 text-center">
-              <p className="text-[10px] uppercase tracking-wider text-muted-foreground">Volume</p>
+              <p className="text-[10px] uppercase tracking-wider text-muted-foreground">Volumen</p>
               <p className="text-xl font-black mt-1">
                 {(stats.volume / 1000).toFixed(1)}<span className="text-xs">k</span>
               </p>
@@ -381,11 +390,11 @@ export function WorkoutView() {
             onClick={() => {
               finishWorkout();
               setSummaryOpen(false);
-              toast.success("Workout saved!", { description: "Nice session." });
+              toast.success("¡Entreno guardado!", { description: "Buena sesión." });
             }}
             className="w-full gradient-brand text-primary-foreground rounded-xl h-11"
           >
-            Save & finish
+            Guardar y finalizar
           </Button>
         </DialogContent>
       </Dialog>

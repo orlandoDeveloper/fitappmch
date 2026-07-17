@@ -20,7 +20,15 @@ import { useWorkoutStore } from "@/lib/store";
 import type { Equipment, MuscleGroup } from "@/lib/types";
 
 const muscles: (MuscleGroup | "All")[] = ["All", "Chest", "Back", "Legs", "Shoulders", "Arms", "Core"];
+const muscleLabel: Record<string, string> = {
+  All: "Todos", Chest: "Pecho", Back: "Espalda", Legs: "Piernas",
+  Shoulders: "Hombros", Arms: "Brazos", Core: "Core",
+};
 const equipments: (Equipment | "All")[] = ["All", "Barbell", "Dumbbell", "Machine", "Cable", "Bodyweight"];
+const equipmentLabel: Record<string, string> = {
+  All: "Todos", Barbell: "Barra", Dumbbell: "Mancuerna",
+  Machine: "Máquina", Cable: "Cable", Bodyweight: "Peso corporal",
+};
 
 export function ExploreView() {
   const [q, setQ] = useState("");
@@ -41,10 +49,10 @@ export function ExploreView() {
     <div className="mx-auto max-w-7xl px-4 py-6 lg:px-8 lg:py-10 space-y-6">
       <div>
         <h1 className="text-3xl lg:text-4xl font-black tracking-tight">
-          Explore <span className="text-gradient-brand">Exercises</span>
+          Explorar <span className="text-gradient-brand">Ejercicios</span>
         </h1>
         <p className="text-sm text-muted-foreground mt-1">
-          Discover movements. Perfect your technique.
+          Descubre movimientos. Perfecciona tu técnica.
         </p>
       </div>
 
@@ -54,7 +62,7 @@ export function ExploreView() {
         <Input
           value={q}
           onChange={(e) => setQ(e.target.value)}
-          placeholder="Search exercises…"
+          placeholder="Buscar ejercicios…"
           className="h-12 pl-11 rounded-2xl bg-card border-border/60 focus-visible:ring-primary/40"
         />
       </div>
@@ -72,7 +80,7 @@ export function ExploreView() {
               size="sm"
               className="rounded-full data-[state=on]:gradient-brand data-[state=on]:border-transparent data-[state=on]:text-primary-foreground data-[state=on]:shadow-[var(--shadow-glow)] border-border/60 text-muted-foreground hover:text-foreground"
             >
-              {m}
+              {muscleLabel[m] ?? m}
             </Toggle>
           ))}
         </div>
@@ -87,7 +95,7 @@ export function ExploreView() {
               size="sm"
               className="rounded-full text-[11px] data-[state=on]:border-success/50 data-[state=on]:bg-success/15 data-[state=on]:text-success border-border/50 text-muted-foreground hover:text-foreground"
             >
-              {e}
+              {equipmentLabel[e] ?? e}
             </Toggle>
           ))}
         </div>
@@ -116,11 +124,11 @@ export function ExploreView() {
                       <Sparkles className="h-5 w-5" />
                     </div>
                     <Badge variant="outline" className="border-border/60 text-[10px] shrink-0">
-                      {ex.equipment}
+                      {equipmentLabel[ex.equipment] ?? ex.equipment}
                     </Badge>
                   </div>
                   <CardTitle className="text-base leading-tight">{ex.name}</CardTitle>
-                  <CardDescription>{ex.target} · {ex.body_part}</CardDescription>
+                  <CardDescription>{muscleLabel[ex.target] ?? ex.target} · {ex.body_part}</CardDescription>
                 </CardHeader>
 
                 <CardFooter className="relative mt-auto pt-0 gap-2 opacity-0 group-hover:opacity-100 translate-y-1 group-hover:translate-y-0 transition-all">
@@ -129,17 +137,17 @@ export function ExploreView() {
                     variant="outline"
                     className="flex-1 border-border/60 h-8 text-xs"
                   >
-                    Technique
+                    Técnica
                   </Button>
                   <Button
                     size="sm"
                     onClick={() => {
                       addExercise(ex.id);
-                      toast.success(`Added ${ex.name} to workout`);
+                      toast.success(`${ex.name} añadido al entreno`);
                     }}
                     className="flex-1 gradient-brand text-primary-foreground h-8 text-xs"
                   >
-                    <Plus className="h-3 w-3" /> Add
+                    <Plus className="h-3 w-3" /> Añadir
                   </Button>
                 </CardFooter>
               </Card>
@@ -150,7 +158,7 @@ export function ExploreView() {
 
       {filtered.length === 0 && (
         <div className="text-center py-16 text-muted-foreground">
-          No exercises match those filters.
+          Ningún ejercicio coincide con esos filtros.
         </div>
       )}
     </div>
