@@ -43,12 +43,21 @@ const fadeUp = {
 };
 
 const typeColor: Record<string, string> = {
-  Empuje: "bg-chart-4/15 text-chart-4 border-chart-4/30",
-  Tirón: "bg-primary/15 text-primary border-primary/30",
-  Piernas: "bg-streak/15 text-streak border-streak/30",
-  Superior: "bg-chart-5/15 text-chart-5 border-chart-5/30",
-  "Cuerpo Completo": "bg-success/15 text-success border-success/30",
-  Inferior: "bg-chart-4/15 text-chart-4 border-chart-4/30",
+  Push: "bg-chart-4/15 text-chart-4 border-chart-4/30",
+  Pull: "bg-primary/15 text-primary border-primary/30",
+  Legs: "bg-streak/15 text-streak border-streak/30",
+  Upper: "bg-chart-5/15 text-chart-5 border-chart-5/30",
+  "Full Body": "bg-success/15 text-success border-success/30",
+  Lower: "bg-chart-4/15 text-chart-4 border-chart-4/30",
+};
+
+const typeLabel: Record<string, string> = {
+  Push: "Empuje",
+  Pull: "Tirón",
+  Legs: "Piernas",
+  Upper: "Superior",
+  "Full Body": "Cuerpo Completo",
+  Lower: "Inferior",
 };
 
 function MetricCard({
