@@ -4,6 +4,21 @@ import { LayoutDashboard, Compass, Dumbbell, User, Bell, Flame, Zap } from "luci
 import type { ReactNode } from "react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarHeader,
+  SidebarInset,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
+import { Separator } from "@/components/ui/separator";
 import { userStats } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
 
@@ -14,150 +29,163 @@ const nav = [
   { to: "/profile", label: "Profile", icon: User },
 ] as const;
 
+function AppSidebar() {
+  const pathname = useRouterState({ select: (r) => r.location.pathname });
+
+  return (
+    <Sidebar collapsible="icon">
+      {/* Header: Logo */}
+      <SidebarHeader>
+        <div className="flex items-center gap-2 px-2 py-3">
+          <div className="grid h-9 w-9 shrink-0 place-items-center rounded-xl gradient-brand shadow-[var(--shadow-glow)]">
+            <Zap className="h-4 w-4 text-primary-foreground" />
+          </div>
+          <span className="font-black text-lg tracking-tight group-data-[collapsible=icon]:hidden">
+            PULSE<span className="text-gradient-brand">FIT</span>
+          </span>
+        </div>
+      </SidebarHeader>
+
+      <Separator className="mx-2 w-auto" />
+
+      {/* Nav items */}
+      <SidebarContent>
+        <SidebarGroup>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {nav.map((item) => {
+                const active =
+                  item.to === "/" ? pathname === "/" : pathname.startsWith(item.to);
+                const Icon = item.icon;
+                return (
+                  <SidebarMenuItem key={item.to}>
+                    <SidebarMenuButton
+                      asChild
+                      isActive={active}
+                      size="lg"
+                      tooltip={item.label}
+                    >
+                      <Link to={item.to}>
+                        <Icon className="h-4 w-4" />
+                        <span>{item.label}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </SidebarContent>
+
+      {/* Footer: streak card */}
+      <SidebarFooter>
+        <div className="rounded-xl border border-border/60 p-3 glass-card group-data-[collapsible=icon]:hidden">
+          <div className="flex items-center gap-1.5 text-xs font-semibold text-streak">
+            <Flame className="h-4 w-4" /> {userStats.streakDays} day streak
+          </div>
+          <p className="mt-1.5 text-xs text-muted-foreground leading-relaxed">
+            Keep it going. Log a session today.
+          </p>
+        </div>
+        {/* collapsed state: just icon */}
+        <div className="hidden group-data-[collapsible=icon]:flex justify-center pb-1">
+          <Flame className="h-5 w-5 text-streak" />
+        </div>
+      </SidebarFooter>
+    </Sidebar>
+  );
+}
+
 export function AppShell({ children }: { children: ReactNode }) {
   const pathname = useRouterState({ select: (r) => r.location.pathname });
 
   return (
     <div className="dark min-h-screen bg-background text-foreground">
-      <div className="flex min-h-screen">
-        {/* Desktop sidebar */}
-        <aside className="hidden lg:flex w-64 shrink-0 flex-col border-r border-border bg-sidebar px-4 py-6 sticky top-0 h-screen">
-          <div className="flex items-center gap-2 px-2 mb-8">
-            <div className="grid h-10 w-10 place-items-center rounded-xl gradient-brand shadow-[var(--shadow-glow)]">
-              <Zap className="h-5 w-5 text-primary-foreground" />
-            </div>
-            <div className="font-black text-lg tracking-tight">
-              PULSE<span className="text-gradient-brand">FIT</span>
-            </div>
-          </div>
+      <SidebarProvider>
+        <AppSidebar />
 
-          <nav className="flex flex-col gap-1">
-            {nav.map((item) => {
-              const active =
-                item.to === "/" ? pathname === "/" : pathname.startsWith(item.to);
-              const Icon = item.icon;
-              return (
-                <Link
-                  key={item.to}
-                  to={item.to}
-                  className={cn(
-                    "group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all",
-                    active
-                      ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                      : "text-muted-foreground hover:text-foreground hover:bg-sidebar-accent/60",
-                  )}
-                >
-                  {active && (
-                    <motion.span
-                      layoutId="sidebar-active"
-                      className="absolute left-0 top-1/2 h-6 w-1 -translate-y-1/2 rounded-r-full gradient-brand"
-                    />
-                  )}
-                  <Icon className="h-4 w-4" />
-                  {item.label}
-                </Link>
-              );
-            })}
-          </nav>
-
-          <div className="mt-auto rounded-2xl border border-border p-4 glass-card">
-            <div className="flex items-center gap-2 text-xs font-semibold text-streak">
-              <Flame className="h-4 w-4" /> {userStats.streakDays} day streak
-            </div>
-            <p className="mt-2 text-xs text-muted-foreground">
-              Keep it going. Log a session today to reach a new personal best.
-            </p>
-          </div>
-        </aside>
-
-        {/* Main */}
-        <div className="flex-1 min-w-0 flex flex-col">
+        <SidebarInset>
           {/* Sticky top header */}
-          <header className="sticky top-0 z-30 border-b border-border/60 bg-background/80 backdrop-blur-xl">
-            <div className="flex h-16 items-center gap-3 px-4 lg:px-8">
-              <div className="lg:hidden flex items-center gap-2">
-                <div className="grid h-9 w-9 place-items-center rounded-xl gradient-brand">
-                  <Zap className="h-4 w-4 text-primary-foreground" />
-                </div>
-                <span className="font-black tracking-tight">
-                  PULSE<span className="text-gradient-brand">FIT</span>
-                </span>
-              </div>
+          <header className="sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-border/60 bg-background/80 px-4 backdrop-blur-xl">
+            {/* Sidebar trigger (hamburger on mobile, toggle on desktop) */}
+            <SidebarTrigger className="text-muted-foreground hover:text-foreground" />
 
-              <div className="ml-auto flex items-center gap-2 sm:gap-3">
-                <motion.div
-                  whileHover={{ scale: 1.03 }}
-                  className="flex items-center gap-1.5 rounded-full gradient-streak px-3 py-1.5 text-xs font-bold text-streak-foreground shadow-sm"
-                >
-                  <Flame className="h-3.5 w-3.5" />
-                  {userStats.streakDays}
-                  <span className="hidden sm:inline">day streak</span>
-                </motion.div>
+            {/* Logo shown only on mobile when sidebar is closed */}
+            <div className="flex items-center gap-2 md:hidden">
+              <span className="font-black tracking-tight">
+                PULSE<span className="text-gradient-brand">FIT</span>
+              </span>
+            </div>
 
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="relative rounded-full hover:bg-accent"
-                >
-                  <Bell className="h-5 w-5" />
-                  <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-destructive ring-2 ring-background" />
-                </Button>
+            <div className="ml-auto flex items-center gap-2 sm:gap-3">
+              <motion.div
+                whileHover={{ scale: 1.03 }}
+                className="flex items-center gap-1.5 rounded-full gradient-streak px-3 py-1.5 text-xs font-bold text-streak-foreground shadow-sm"
+              >
+                <Flame className="h-3.5 w-3.5" />
+                {userStats.streakDays}
+                <span className="hidden sm:inline">day streak</span>
+              </motion.div>
 
-                <Avatar className="h-9 w-9 ring-2 ring-primary/30">
-                  <AvatarFallback className="gradient-brand text-primary-foreground text-xs font-bold">
-                    AM
-                  </AvatarFallback>
-                </Avatar>
-              </div>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="relative rounded-full hover:bg-accent"
+              >
+                <Bell className="h-5 w-5" />
+                <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-destructive ring-2 ring-background" />
+              </Button>
+
+              <Avatar className="h-9 w-9 ring-2 ring-primary/30">
+                <AvatarFallback className="gradient-brand text-primary-foreground text-xs font-bold">
+                  AM
+                </AvatarFallback>
+              </Avatar>
             </div>
           </header>
 
-          <main className="flex-1 pb-24 lg:pb-8">{children}</main>
-        </div>
-      </div>
+          {/* Page content */}
+          <main className="flex-1 pb-8">{children}</main>
 
-      {/* Mobile bottom nav */}
-      <nav className="lg:hidden fixed bottom-0 inset-x-0 z-40 border-t border-border/60 bg-background/90 backdrop-blur-xl">
-        <div className="mx-auto grid max-w-md grid-cols-4 px-2 py-2">
-          {nav.map((item) => {
-            const active =
-              item.to === "/" ? pathname === "/" : pathname.startsWith(item.to);
-            const Icon = item.icon;
-            return (
-              <Link
-                key={item.to}
-                to={item.to}
-                className="relative flex flex-col items-center gap-1 py-2 text-[10px] font-medium"
-              >
-                {active && (
-                  <motion.span
-                    layoutId="bottom-active"
-                    className="absolute inset-x-3 top-0 h-0.5 rounded-full gradient-brand"
-                  />
-                )}
-                <motion.span
-                  animate={{ scale: active ? 1.1 : 1 }}
-                  className={cn(
-                    "grid h-9 w-9 place-items-center rounded-xl transition-colors",
-                    active
-                      ? "bg-primary/15 text-primary"
-                      : "text-muted-foreground",
-                  )}
-                >
-                  <Icon className="h-5 w-5" />
-                </motion.span>
-                <span
-                  className={cn(
-                    active ? "text-foreground" : "text-muted-foreground",
-                  )}
-                >
-                  {item.label}
-                </span>
-              </Link>
-            );
-          })}
-        </div>
-      </nav>
+          {/* Mobile bottom nav */}
+          <nav className="md:hidden fixed bottom-0 inset-x-0 z-40 border-t border-border/60 bg-background/90 backdrop-blur-xl">
+            <div className="mx-auto grid max-w-md grid-cols-4 px-2 py-2">
+              {nav.map((item) => {
+                const active =
+                  item.to === "/" ? pathname === "/" : pathname.startsWith(item.to);
+                const Icon = item.icon;
+                return (
+                  <Link
+                    key={item.to}
+                    to={item.to}
+                    className="relative flex flex-col items-center gap-1 py-2 text-[10px] font-medium"
+                  >
+                    {active && (
+                      <motion.span
+                        layoutId="bottom-active"
+                        className="absolute inset-x-3 top-0 h-0.5 rounded-full gradient-brand"
+                      />
+                    )}
+                    <motion.span
+                      animate={{ scale: active ? 1.1 : 1 }}
+                      className={cn(
+                        "grid h-9 w-9 place-items-center rounded-xl transition-colors",
+                        active ? "bg-primary/15 text-primary" : "text-muted-foreground",
+                      )}
+                    >
+                      <Icon className="h-5 w-5" />
+                    </motion.span>
+                    <span className={cn(active ? "text-foreground" : "text-muted-foreground")}>
+                      {item.label}
+                    </span>
+                  </Link>
+                );
+              })}
+            </div>
+          </nav>
+        </SidebarInset>
+      </SidebarProvider>
     </div>
   );
 }

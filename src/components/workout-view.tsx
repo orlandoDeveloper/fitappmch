@@ -12,7 +12,13 @@ import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -21,6 +27,15 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { exercises as allExercises } from "@/lib/mock-data";
 import { useWorkoutStore } from "@/lib/store";
 import { cn } from "@/lib/utils";
@@ -82,23 +97,24 @@ export function WorkoutView() {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
         >
-          <Card className="glass-card border-border/60 p-8 lg:p-12 text-center">
-            <div className="mx-auto grid h-20 w-20 place-items-center rounded-3xl gradient-brand shadow-[var(--shadow-glow)]">
-              <Flag className="h-10 w-10 text-primary-foreground" />
-            </div>
-            <h1 className="mt-6 text-3xl font-black tracking-tight">
-              Ready to <span className="text-gradient-brand">crush it?</span>
-            </h1>
-            <p className="mt-2 text-muted-foreground max-w-sm mx-auto">
-              Start a live session to log sets, reps, weight and RPE in real
-              time.
-            </p>
-            <Button
-              onClick={startWorkout}
-              className="mt-8 gradient-brand text-primary-foreground rounded-full h-12 px-8 text-base shadow-[var(--shadow-glow)]"
-            >
-              Start new workout
-            </Button>
+          <Card className="glass-card border-border/60">
+            <CardContent className="pt-8 pb-12 lg:py-16 text-center">
+              <div className="mx-auto grid h-20 w-20 place-items-center rounded-3xl gradient-brand shadow-[var(--shadow-glow)]">
+                <Flag className="h-10 w-10 text-primary-foreground" />
+              </div>
+              <h1 className="mt-6 text-3xl font-black tracking-tight">
+                Ready to <span className="text-gradient-brand">crush it?</span>
+              </h1>
+              <p className="mt-2 text-muted-foreground max-w-sm mx-auto">
+                Start a live session to log sets, reps, weight and RPE in real time.
+              </p>
+              <Button
+                onClick={startWorkout}
+                className="mt-8 gradient-brand text-primary-foreground rounded-full h-12 px-8 text-base shadow-[var(--shadow-glow)]"
+              >
+                Start new workout
+              </Button>
+            </CardContent>
           </Card>
         </motion.div>
       </div>
@@ -108,32 +124,34 @@ export function WorkoutView() {
   return (
     <div className="mx-auto max-w-4xl px-4 py-6 lg:px-8 lg:py-10 space-y-5">
       {/* Session bar */}
-      <Card className="glass-card border-border/60 p-4 sticky top-16 z-20">
-        <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 sm:flex sm:justify-between">
-          <div className="flex min-w-0 items-center gap-3">
-            <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl gradient-brand text-primary-foreground">
-              <Timer className="h-5 w-5" />
+      <Card className="glass-card border-border/60 sticky top-16 z-20">
+        <CardContent className="py-4">
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl gradient-brand text-primary-foreground">
+                <Timer className="h-5 w-5" />
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">Active session</p>
+                <p className="text-lg font-black tabular-nums">{elapsed}</p>
+              </div>
             </div>
-            <div className="min-w-0">
-              <p className="text-xs text-muted-foreground">Active session</p>
-              <p className="text-lg font-black tabular-nums">{elapsed}</p>
+            <div className="hidden sm:flex gap-6 text-xs text-muted-foreground">
+              <div className="text-center">
+                <p className="text-[10px] uppercase tracking-wider">Sets</p>
+                <p className="text-foreground font-bold text-sm">
+                  {stats.completed}/{stats.totalSets}
+                </p>
+              </div>
+              <div className="text-center">
+                <p className="text-[10px] uppercase tracking-wider">Volume</p>
+                <p className="text-foreground font-bold text-sm">
+                  {stats.volume.toLocaleString()} kg
+                </p>
+              </div>
             </div>
           </div>
-          <div className="hidden sm:flex gap-4 text-xs text-muted-foreground">
-            <div>
-              <p className="text-[10px] uppercase tracking-wider">Sets</p>
-              <p className="text-foreground font-bold">
-                {stats.completed}/{stats.totalSets}
-              </p>
-            </div>
-            <div>
-              <p className="text-[10px] uppercase tracking-wider">Volume</p>
-              <p className="text-foreground font-bold">
-                {stats.volume.toLocaleString()} kg
-              </p>
-            </div>
-          </div>
-        </div>
+        </CardContent>
       </Card>
 
       {/* Exercises */}
@@ -149,113 +167,127 @@ export function WorkoutView() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, x: -20 }}
             >
-              <Card className="glass-card border-border/60 p-5">
-                <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3">
-                  <div className="min-w-0">
-                    <h3 className="font-bold truncate">{ex.name}</h3>
-                    <p className="text-xs text-muted-foreground">
-                      {ex.target} · {ex.equipment}
-                    </p>
-                  </div>
-                  <Button
-                    size="icon"
-                    variant="ghost"
-                    onClick={() => removeExercise(we.exerciseId)}
-                    className="h-8 w-8 text-muted-foreground hover:text-destructive"
-                  >
-                    <X className="h-4 w-4" />
-                  </Button>
-                </div>
-
-                <div className="mt-4 grid grid-cols-[24px_1fr_1fr_60px_40px_40px] gap-2 items-center text-[10px] uppercase tracking-wider text-muted-foreground font-semibold px-1">
-                  <span>#</span>
-                  <span>Weight (kg)</span>
-                  <span>Reps</span>
-                  <span>RPE</span>
-                  <span />
-                  <span />
-                </div>
-
-                <div className="mt-1 space-y-1.5">
-                  {we.sets.map((s, i) => (
-                    <motion.div
-                      key={s.id}
-                      layout
-                      className={cn(
-                        "grid grid-cols-[24px_1fr_1fr_60px_40px_40px] gap-2 items-center rounded-xl px-1 py-1 transition-colors",
-                        s.completed && "bg-success/10",
-                      )}
+              <Card className="glass-card border-border/60">
+                <CardHeader className="pb-2">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <CardTitle className="truncate">{ex.name}</CardTitle>
+                      <CardDescription>{ex.target} · {ex.equipment}</CardDescription>
+                    </div>
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      onClick={() => removeExercise(we.exerciseId)}
+                      className="h-8 w-8 shrink-0 text-muted-foreground hover:text-destructive"
                     >
-                      <span className="text-xs font-bold text-muted-foreground pl-1">
-                        {i + 1}
-                      </span>
-                      <Input
-                        type="number"
-                        value={s.weight}
-                        onChange={(e) =>
-                          updateSet(we.exerciseId, s.id, {
-                            weight: Number(e.target.value) || 0,
-                          })
-                        }
-                        className="h-9 bg-input/60 border-border/60 focus-visible:ring-primary/40 text-sm"
-                      />
-                      <Input
-                        type="number"
-                        value={s.reps}
-                        onChange={(e) =>
-                          updateSet(we.exerciseId, s.id, {
-                            reps: Number(e.target.value) || 0,
-                          })
-                        }
-                        className="h-9 bg-input/60 border-border/60 focus-visible:ring-primary/40 text-sm"
-                      />
-                      <Input
-                        type="number"
-                        min={1}
-                        max={10}
-                        value={s.rpe}
-                        onChange={(e) =>
-                          updateSet(we.exerciseId, s.id, {
-                            rpe: Number(e.target.value) || 0,
-                          })
-                        }
-                        className="h-9 bg-input/60 border-border/60 focus-visible:ring-primary/40 text-sm"
-                      />
-                      <motion.button
-                        whileTap={{ scale: 0.85 }}
-                        onClick={() => toggleSetComplete(we.exerciseId, s.id)}
-                        className={cn(
-                          "grid h-9 w-9 place-items-center rounded-xl transition-all",
-                          s.completed
-                            ? "gradient-success text-success-foreground shadow-md"
-                            : "bg-muted text-muted-foreground hover:bg-accent",
-                        )}
-                      >
-                        <motion.span
-                          animate={s.completed ? { scale: [1, 1.3, 1] } : {}}
-                          transition={{ duration: 0.3 }}
-                        >
-                          <Check className="h-4 w-4" strokeWidth={3} />
-                        </motion.span>
-                      </motion.button>
-                      <button
-                        onClick={() => removeSet(we.exerciseId, s.id)}
-                        className="grid h-9 w-9 place-items-center rounded-xl text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
-                      >
-                        <Trash2 className="h-3.5 w-3.5" />
-                      </button>
-                    </motion.div>
-                  ))}
-                </div>
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </CardHeader>
 
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => addSet(we.exerciseId)}
-                  className="mt-3 w-full text-primary hover:text-primary hover:bg-primary/10 rounded-xl"
-                >
-                  <Plus className="h-4 w-4" /> Add set
-                </Button>
+                <CardContent className="pt-0">
+                  <Table>
+                    <TableHeader>
+                      <TableRow className="border-border/40 hover:bg-transparent">
+                        <TableHead className="w-8 text-[10px] uppercase tracking-wider">#</TableHead>
+                        <TableHead className="text-[10px] uppercase tracking-wider">Weight (kg)</TableHead>
+                        <TableHead className="text-[10px] uppercase tracking-wider">Reps</TableHead>
+                        <TableHead className="w-16 text-[10px] uppercase tracking-wider">RPE</TableHead>
+                        <TableHead className="w-10" />
+                        <TableHead className="w-10" />
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {we.sets.map((s, i) => (
+                        <TableRow
+                          key={s.id}
+                          className={cn(
+                            "border-border/40 hover:bg-transparent transition-colors",
+                            s.completed && "bg-success/10",
+                          )}
+                        >
+                          <TableCell className="text-xs font-bold text-muted-foreground py-2">
+                            {i + 1}
+                          </TableCell>
+                          <TableCell className="py-2">
+                            <Input
+                              type="number"
+                              value={s.weight}
+                              onChange={(e) =>
+                                updateSet(we.exerciseId, s.id, {
+                                  weight: Number(e.target.value) || 0,
+                                })
+                              }
+                              className="h-9 bg-input/60 border-border/60 focus-visible:ring-primary/40 text-sm"
+                            />
+                          </TableCell>
+                          <TableCell className="py-2">
+                            <Input
+                              type="number"
+                              value={s.reps}
+                              onChange={(e) =>
+                                updateSet(we.exerciseId, s.id, {
+                                  reps: Number(e.target.value) || 0,
+                                })
+                              }
+                              className="h-9 bg-input/60 border-border/60 focus-visible:ring-primary/40 text-sm"
+                            />
+                          </TableCell>
+                          <TableCell className="py-2">
+                            <Input
+                              type="number"
+                              min={1}
+                              max={10}
+                              value={s.rpe}
+                              onChange={(e) =>
+                                updateSet(we.exerciseId, s.id, {
+                                  rpe: Number(e.target.value) || 0,
+                                })
+                              }
+                              className="h-9 bg-input/60 border-border/60 focus-visible:ring-primary/40 text-sm"
+                            />
+                          </TableCell>
+                          <TableCell className="py-2">
+                            <motion.button
+                              whileTap={{ scale: 0.85 }}
+                              onClick={() => toggleSetComplete(we.exerciseId, s.id)}
+                              className={cn(
+                                "grid h-9 w-9 place-items-center rounded-xl transition-all",
+                                s.completed
+                                  ? "gradient-success text-success-foreground shadow-md"
+                                  : "bg-muted text-muted-foreground hover:bg-accent",
+                              )}
+                            >
+                              <motion.span
+                                animate={s.completed ? { scale: [1, 1.3, 1] } : {}}
+                                transition={{ duration: 0.3 }}
+                              >
+                                <Check className="h-4 w-4" strokeWidth={3} />
+                              </motion.span>
+                            </motion.button>
+                          </TableCell>
+                          <TableCell className="py-2">
+                            <button
+                              onClick={() => removeSet(we.exerciseId, s.id)}
+                              className="grid h-9 w-9 place-items-center rounded-xl text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => addSet(we.exerciseId)}
+                    className="mt-3 w-full text-primary hover:text-primary hover:bg-primary/10 rounded-xl"
+                  >
+                    <Plus className="h-4 w-4" /> Add set
+                  </Button>
+                </CardContent>
               </Card>
             </motion.div>
           );
@@ -275,7 +307,7 @@ export function WorkoutView() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="fixed bottom-24 lg:bottom-8 right-4 lg:right-8 z-40"
+          className="fixed bottom-24 md:bottom-8 right-4 lg:right-8 z-40"
         >
           <Button
             onClick={() => setSummaryOpen(true)}
@@ -286,13 +318,14 @@ export function WorkoutView() {
         </motion.div>
       )}
 
-      {/* Exercise picker */}
+      {/* Exercise picker dialog */}
       <Dialog open={pickerOpen} onOpenChange={setPickerOpen}>
         <DialogContent className="max-w-lg bg-card border-border/60">
           <DialogHeader>
             <DialogTitle>Pick an exercise</DialogTitle>
             <DialogDescription>Add to your active session.</DialogDescription>
           </DialogHeader>
+          <Separator className="border-border/40" />
           <div className="max-h-[60vh] overflow-y-auto space-y-1 -mx-2 px-2">
             {allExercises.map((ex) => (
               <button
@@ -319,14 +352,14 @@ export function WorkoutView() {
         </DialogContent>
       </Dialog>
 
-      {/* Summary modal */}
+      {/* Workout summary dialog */}
       <Dialog open={summaryOpen} onOpenChange={setSummaryOpen}>
         <DialogContent className="max-w-md bg-card border-border/60">
           <DialogHeader>
             <DialogTitle className="text-2xl font-black">
               Workout <span className="text-gradient-brand">complete!</span>
             </DialogTitle>
-            <DialogDescription>Great work. Here's your session.</DialogDescription>
+            <DialogDescription>Great work. Here's your session summary.</DialogDescription>
           </DialogHeader>
           <div className="grid grid-cols-3 gap-3 my-4">
             <div className="rounded-2xl bg-muted/50 p-4 text-center">

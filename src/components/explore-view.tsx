@@ -4,12 +4,20 @@ import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Toggle } from "@/components/ui/toggle";
+import { Separator } from "@/components/ui/separator";
 import { exercises } from "@/lib/mock-data";
 import { useWorkoutStore } from "@/lib/store";
 import type { Equipment, MuscleGroup } from "@/lib/types";
-import { cn } from "@/lib/utils";
 
 const muscles: (MuscleGroup | "All")[] = ["All", "Chest", "Back", "Legs", "Shoulders", "Arms", "Core"];
 const equipments: (Equipment | "All")[] = ["All", "Barbell", "Dumbbell", "Machine", "Cable", "Bodyweight"];
@@ -40,55 +48,54 @@ export function ExploreView() {
         </p>
       </div>
 
-      {/* Search + filters */}
-      <div className="space-y-4">
-        <div className="relative">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-            placeholder="Search exercises…"
-            className="h-12 pl-11 rounded-2xl bg-card border-border/60 focus-visible:ring-primary/40"
-          />
-        </div>
+      {/* Search */}
+      <div className="relative">
+        <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <Input
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          placeholder="Search exercises…"
+          className="h-12 pl-11 rounded-2xl bg-card border-border/60 focus-visible:ring-primary/40"
+        />
+      </div>
 
-        <div className="space-y-2">
-          <div className="flex flex-wrap gap-2">
-            {muscles.map((m) => (
-              <button
-                key={m}
-                onClick={() => setMuscle(m)}
-                className={cn(
-                  "rounded-full border px-3.5 py-1.5 text-xs font-semibold transition-all",
-                  muscle === m
-                    ? "gradient-brand border-transparent text-primary-foreground shadow-[var(--shadow-glow)]"
-                    : "border-border/60 bg-card text-muted-foreground hover:text-foreground hover:border-primary/40",
-                )}
-              >
-                {m}
-              </button>
-            ))}
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {equipments.map((e) => (
-              <button
-                key={e}
-                onClick={() => setEquipment(e)}
-                className={cn(
-                  "rounded-full border px-3 py-1 text-[11px] font-medium transition-all",
-                  equipment === e
-                    ? "border-success/50 bg-success/15 text-success"
-                    : "border-border/50 text-muted-foreground hover:text-foreground",
-                )}
-              >
-                {e}
-              </button>
-            ))}
-          </div>
+      {/* Filters */}
+      <div className="space-y-3">
+        {/* Muscle group toggles */}
+        <div className="flex flex-wrap gap-2">
+          {muscles.map((m) => (
+            <Toggle
+              key={m}
+              pressed={muscle === m}
+              onPressedChange={() => setMuscle(m)}
+              variant="outline"
+              size="sm"
+              className="rounded-full data-[state=on]:gradient-brand data-[state=on]:border-transparent data-[state=on]:text-primary-foreground data-[state=on]:shadow-[var(--shadow-glow)] border-border/60 text-muted-foreground hover:text-foreground"
+            >
+              {m}
+            </Toggle>
+          ))}
+        </div>
+        {/* Equipment toggles */}
+        <div className="flex flex-wrap gap-2">
+          {equipments.map((e) => (
+            <Toggle
+              key={e}
+              pressed={equipment === e}
+              onPressedChange={() => setEquipment(e)}
+              variant="outline"
+              size="sm"
+              className="rounded-full text-[11px] data-[state=on]:border-success/50 data-[state=on]:bg-success/15 data-[state=on]:text-success border-border/50 text-muted-foreground hover:text-foreground"
+            >
+              {e}
+            </Toggle>
+          ))}
         </div>
       </div>
 
-      {/* Grid */}
+      <Separator className="border-border/40" />
+
+      {/* Exercise grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         <AnimatePresence mode="popLayout">
           {filtered.map((ex, i) => (
@@ -100,42 +107,41 @@ export function ExploreView() {
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ delay: Math.min(i * 0.03, 0.3), duration: 0.35 }}
             >
-              <Card className="group relative overflow-hidden border-border/60 glass-card p-5 h-full">
+              <Card className="group relative overflow-hidden border-border/60 glass-card h-full flex flex-col">
                 <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity gradient-brand" style={{ mixBlendMode: "overlay" }} />
-                <div className="relative flex flex-col h-full">
+
+                <CardHeader className="relative pb-2">
                   <div className="flex items-start justify-between gap-2">
                     <div className="grid h-11 w-11 place-items-center rounded-xl bg-primary/10 text-primary">
                       <Sparkles className="h-5 w-5" />
                     </div>
-                    <Badge variant="outline" className="border-border/60 text-[10px]">
+                    <Badge variant="outline" className="border-border/60 text-[10px] shrink-0">
                       {ex.equipment}
                     </Badge>
                   </div>
-                  <h3 className="mt-4 font-bold text-base leading-tight">{ex.name}</h3>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    {ex.target} · {ex.body_part}
-                  </p>
+                  <CardTitle className="text-base leading-tight">{ex.name}</CardTitle>
+                  <CardDescription>{ex.target} · {ex.body_part}</CardDescription>
+                </CardHeader>
 
-                  <div className="mt-4 flex gap-2 opacity-0 group-hover:opacity-100 translate-y-1 group-hover:translate-y-0 transition-all">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className="flex-1 border-border/60 h-8 text-xs"
-                    >
-                      Technique
-                    </Button>
-                    <Button
-                      size="sm"
-                      onClick={() => {
-                        addExercise(ex.id);
-                        toast.success(`Added ${ex.name} to workout`);
-                      }}
-                      className="flex-1 gradient-brand text-primary-foreground h-8 text-xs"
-                    >
-                      <Plus className="h-3 w-3" /> Add
-                    </Button>
-                  </div>
-                </div>
+                <CardFooter className="relative mt-auto pt-0 gap-2 opacity-0 group-hover:opacity-100 translate-y-1 group-hover:translate-y-0 transition-all">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="flex-1 border-border/60 h-8 text-xs"
+                  >
+                    Technique
+                  </Button>
+                  <Button
+                    size="sm"
+                    onClick={() => {
+                      addExercise(ex.id);
+                      toast.success(`Added ${ex.name} to workout`);
+                    }}
+                    className="flex-1 gradient-brand text-primary-foreground h-8 text-xs"
+                  >
+                    <Plus className="h-3 w-3" /> Add
+                  </Button>
+                </CardFooter>
               </Card>
             </motion.div>
           ))}

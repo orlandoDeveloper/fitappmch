@@ -21,8 +21,15 @@ import {
 } from "recharts";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { Separator } from "@/components/ui/separator";
 import {
   muscleSplit,
   recentWorkouts,
@@ -69,25 +76,25 @@ function MetricCard({
       transition={{ delay: index * 0.06, duration: 0.4, ease: "easeOut" }}
       whileHover={{ y: -3 }}
     >
-      <Card className="relative overflow-hidden border-border/60 p-5 glass-card">
+      <Card className="relative overflow-hidden border-border/60 glass-card">
         <div
           className={`absolute -top-16 -right-16 h-40 w-40 rounded-full blur-3xl opacity-30 ${gradient}`}
         />
-        <div className="relative flex items-start justify-between">
-          <div>
-            <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+        <CardHeader className="relative pb-2">
+          <div className="flex items-start justify-between">
+            <CardDescription className="text-xs font-medium uppercase tracking-wider">
               {label}
-            </p>
-            <p className="mt-2 text-3xl font-black tracking-tight">{value}</p>
-            {sub && <div className="mt-2">{sub}</div>}
+            </CardDescription>
+            <div
+              className={`grid h-10 w-10 shrink-0 place-items-center rounded-xl text-primary-foreground ${gradient}`}
+            >
+              {icon}
+            </div>
           </div>
-          <div
-            className={`grid h-10 w-10 shrink-0 place-items-center rounded-xl text-primary-foreground ${gradient}`}
-          >
-            {icon}
-          </div>
-        </div>
-        {children && <div className="relative mt-4">{children}</div>}
+          <CardTitle className="text-3xl font-black tracking-tight">{value}</CardTitle>
+          {sub && <div className="mt-1">{sub}</div>}
+        </CardHeader>
+        {children && <CardContent className="relative pt-0">{children}</CardContent>}
       </Card>
     </motion.div>
   );
@@ -175,49 +182,51 @@ export function DashboardView() {
           transition={{ delay: 0.2 }}
           className="lg:col-span-3"
         >
-          <Card className="glass-card border-border/60 p-5">
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <h3 className="font-bold">Volume Progress</h3>
-                <p className="text-xs text-muted-foreground">
-                  Last 8 weeks · kilograms
-                </p>
+          <Card className="glass-card border-border/60 h-full">
+            <CardHeader className="pb-2">
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle>Volume Progress</CardTitle>
+                  <CardDescription>Last 8 weeks · kilograms</CardDescription>
+                </div>
+                <Badge variant="outline" className="border-primary/30 text-primary">
+                  Trending up
+                </Badge>
               </div>
-              <Badge variant="outline" className="border-primary/30 text-primary">
-                Trending up
-              </Badge>
-            </div>
-            <div className="h-64">
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={volumeSeries}>
-                  <defs>
-                    <linearGradient id="vol" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="oklch(0.68 0.19 280)" stopOpacity={0.6} />
-                      <stop offset="100%" stopColor="oklch(0.68 0.19 280)" stopOpacity={0} />
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="oklch(1 0 0 / 0.06)" />
-                  <XAxis dataKey="week" stroke="oklch(0.68 0.02 258)" fontSize={11} tickLine={false} axisLine={false} />
-                  <YAxis stroke="oklch(0.68 0.02 258)" fontSize={11} tickLine={false} axisLine={false} tickFormatter={(v) => `${v / 1000}k`} />
-                  <Tooltip
-                    contentStyle={{
-                      background: "oklch(0.21 0.02 262)",
-                      border: "1px solid oklch(0.28 0.02 262)",
-                      borderRadius: 12,
-                      fontSize: 12,
-                    }}
-                    labelStyle={{ color: "oklch(0.98 0.005 250)" }}
-                  />
-                  <Area
-                    type="monotone"
-                    dataKey="volume"
-                    stroke="oklch(0.68 0.19 280)"
-                    strokeWidth={2.5}
-                    fill="url(#vol)"
-                  />
-                </AreaChart>
-              </ResponsiveContainer>
-            </div>
+            </CardHeader>
+            <CardContent>
+              <div className="h-64">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={volumeSeries}>
+                    <defs>
+                      <linearGradient id="vol" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="oklch(0.68 0.19 280)" stopOpacity={0.6} />
+                        <stop offset="100%" stopColor="oklch(0.68 0.19 280)" stopOpacity={0} />
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" stroke="oklch(1 0 0 / 0.06)" />
+                    <XAxis dataKey="week" stroke="oklch(0.68 0.02 258)" fontSize={11} tickLine={false} axisLine={false} />
+                    <YAxis stroke="oklch(0.68 0.02 258)" fontSize={11} tickLine={false} axisLine={false} tickFormatter={(v) => `${v / 1000}k`} />
+                    <Tooltip
+                      contentStyle={{
+                        background: "oklch(0.21 0.02 262)",
+                        border: "1px solid oklch(0.28 0.02 262)",
+                        borderRadius: 12,
+                        fontSize: 12,
+                      }}
+                      labelStyle={{ color: "oklch(0.98 0.005 250)" }}
+                    />
+                    <Area
+                      type="monotone"
+                      dataKey="volume"
+                      stroke="oklch(0.68 0.19 280)"
+                      strokeWidth={2.5}
+                      fill="url(#vol)"
+                    />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
+            </CardContent>
           </Card>
         </motion.div>
 
@@ -228,30 +237,32 @@ export function DashboardView() {
           transition={{ delay: 0.28 }}
           className="lg:col-span-2"
         >
-          <Card className="glass-card border-border/60 p-5">
-            <div className="mb-4">
-              <h3 className="font-bold">Muscle Group Split</h3>
-              <p className="text-xs text-muted-foreground">Sets this week</p>
-            </div>
-            <div className="h-64">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={muscleSplit}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="oklch(1 0 0 / 0.06)" />
-                  <XAxis dataKey="group" stroke="oklch(0.68 0.02 258)" fontSize={10} tickLine={false} axisLine={false} />
-                  <YAxis stroke="oklch(0.68 0.02 258)" fontSize={10} tickLine={false} axisLine={false} />
-                  <Tooltip
-                    contentStyle={{
-                      background: "oklch(0.21 0.02 262)",
-                      border: "1px solid oklch(0.28 0.02 262)",
-                      borderRadius: 12,
-                      fontSize: 12,
-                    }}
-                    cursor={{ fill: "oklch(1 0 0 / 0.04)" }}
-                  />
-                  <Bar dataKey="sets" fill="oklch(0.72 0.17 155)" radius={[8, 8, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
+          <Card className="glass-card border-border/60 h-full">
+            <CardHeader className="pb-2">
+              <CardTitle>Muscle Group Split</CardTitle>
+              <CardDescription>Sets this week</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="h-64">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={muscleSplit}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="oklch(1 0 0 / 0.06)" />
+                    <XAxis dataKey="group" stroke="oklch(0.68 0.02 258)" fontSize={10} tickLine={false} axisLine={false} />
+                    <YAxis stroke="oklch(0.68 0.02 258)" fontSize={10} tickLine={false} axisLine={false} />
+                    <Tooltip
+                      contentStyle={{
+                        background: "oklch(0.21 0.02 262)",
+                        border: "1px solid oklch(0.28 0.02 262)",
+                        borderRadius: 12,
+                        fontSize: 12,
+                      }}
+                      cursor={{ fill: "oklch(1 0 0 / 0.04)" }}
+                    />
+                    <Bar dataKey="sets" fill="oklch(0.72 0.17 155)" radius={[8, 8, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </CardContent>
           </Card>
         </motion.div>
       </div>
@@ -263,40 +274,44 @@ export function DashboardView() {
         animate="animate"
         transition={{ delay: 0.35 }}
       >
-        <Card className="glass-card border-border/60 p-5">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h3 className="font-bold">Recent Workouts</h3>
-              <p className="text-xs text-muted-foreground">Your last sessions</p>
+        <Card className="glass-card border-border/60">
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle>Recent Workouts</CardTitle>
+                <CardDescription>Your last sessions</CardDescription>
+              </div>
+              <Button variant="ghost" size="sm" className="text-primary hover:text-primary">
+                View all
+              </Button>
             </div>
-            <Button variant="ghost" size="sm" className="text-primary hover:text-primary">
-              View all
-            </Button>
-          </div>
-          <ul className="divide-y divide-border/60">
-            {recentWorkouts.map((w, i) => (
-              <motion.li
-                key={w.id}
-                initial={{ opacity: 0, x: -8 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.4 + i * 0.05 }}
-                className="flex items-center gap-3 py-3"
-              >
-                <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-primary/10 text-primary">
-                  <Dumbbell className="h-4 w-4" />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-semibold">{w.name}</p>
-                  <p className="text-xs text-muted-foreground">
-                    {w.date} · {w.durationMin} min · {w.volumeKg.toLocaleString()} kg
-                  </p>
-                </div>
-                <Badge variant="outline" className={typeColor[w.type]}>
-                  {w.type}
-                </Badge>
-              </motion.li>
-            ))}
-          </ul>
+          </CardHeader>
+          <CardContent className="pt-0">
+            <ul className="divide-y divide-border/60">
+              {recentWorkouts.map((w, i) => (
+                <motion.li
+                  key={w.id}
+                  initial={{ opacity: 0, x: -8 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.4 + i * 0.05 }}
+                  className="flex items-center gap-3 py-3"
+                >
+                  <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-primary/10 text-primary">
+                    <Dumbbell className="h-4 w-4" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-semibold">{w.name}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {w.date} · {w.durationMin} min · {w.volumeKg.toLocaleString()} kg
+                    </p>
+                  </div>
+                  <Badge variant="outline" className={typeColor[w.type]}>
+                    {w.type}
+                  </Badge>
+                </motion.li>
+              ))}
+            </ul>
+          </CardContent>
         </Card>
       </motion.div>
     </div>
